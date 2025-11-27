@@ -18,6 +18,9 @@ export default async function TestimonialsPage() {
     displayTestimonials = fallbackTestimonials
   }
 
+  // Randomize testimonials order
+  displayTestimonials = [...displayTestimonials].sort(() => Math.random() - 0.5)
+
   return (
     <>
       <Header />
