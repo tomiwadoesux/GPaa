@@ -27,21 +27,32 @@ export function TestimonialForm() {
     const testimonialData = {
       ...formData,
       date: formattedDate,
-      id: Date.now(), // Simple ID generation
     }
 
-    // Log the data (in a real app, this would be sent to a server)
-    console.log('New testimonial submitted:', testimonialData)
+    try {
+      const response = await fetch("/api/testimonials", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(testimonialData),
+      })
 
-    // Simulate submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+      if (!response.ok) {
+        throw new Error("Failed to submit testimonial")
+      }
 
-    setIsSubmitting(false)
-    setIsSuccess(true)
-    setFormData({ name: "", relationship: "", message: "" })
+      setIsSuccess(true)
+      setFormData({ name: "", relationship: "", message: "" })
 
-    // Reset success message after 5 seconds
-    setTimeout(() => setIsSuccess(false), 5000)
+      // Reset success message after 5 seconds
+      setTimeout(() => setIsSuccess(false), 5000)
+    } catch (error) {
+      console.error("Submission error:", error)
+      alert("There was an error submitting your memory. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (

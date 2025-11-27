@@ -59,8 +59,10 @@ export function GalleryUploadForm() {
       setFileName(null)
       e.target.reset() // Reset file input
 
-      // Refresh the page to show the new image
-      window.location.reload()
+      // Wait 2 seconds to show success message, then refresh
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
 
     } catch (error) {
       console.error("Upload error:", error)
