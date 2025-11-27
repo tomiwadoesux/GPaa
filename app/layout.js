@@ -14,12 +14,12 @@ const playfair = Playfair_Display({
 })
 
 export const metadata = {
-  title: "In Loving Memory ofTimothy Adebayo Adeku | 1945-2024",
+  title: "In Loving Memory ofTimothy Adebayo Adeku | 1952-2024",
   description:
     "A tribute to the extraordinary life ofTimothy Adebayo Adeku. Author, philanthropist, and beloved family member. Share memories, view photos, and celebrate his legacy.",
   openGraph: {
     title: "In Loving Memory ofTimothy Adebayo Adeku",
-    description: "A tribute celebrating the extraordinary life ofTimothy Adebayo Adeku (1945-2024)",
+    description: "A tribute celebrating the extraordinary life ofTimothy Adebayo Adeku (1952-2024)",
     type: "website",
   },
     generator: 'v0.app'
