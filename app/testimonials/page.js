@@ -1,5 +1,6 @@
-'use server'
+'use client'
 
+import { useState, useEffect } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { BackToTop } from "@/components/back-to-top"
@@ -8,18 +9,37 @@ import { QuoteIcon, CalendarIcon, UserIcon } from "@/components/icons"
 import { getTestimonials } from "@/lib/sanity"
 import { testimonials as fallbackTestimonials } from "@/data/testimonials"
 
-export default async function TestimonialsPage() {
-  // Try to fetch from Sanity, fall back to static data if unavailable
-  let displayTestimonials = []
-  try {
-    displayTestimonials = await getTestimonials()
-  } catch (error) {
-    console.log('Sanity fetch failed, using fallback data')
-    displayTestimonials = fallbackTestimonials
-  }
+export default function TestimonialsPage() {
+  const [displayTestimonials, setDisplayTestimonials] = useState([])
+  const [sortByDate, setSortByDate] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Randomize testimonials order
-  displayTestimonials = [...displayTestimonials].sort(() => Math.random() - 0.5)
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      let testimonials = []
+      try {
+        testimonials = await getTestimonials()
+      } catch (error) {
+        console.log('Sanity fetch failed, using fallback data')
+        testimonials = fallbackTestimonials
+      }
+
+      // Randomize testimonials order by default
+      testimonials = [...testimonials].sort(() => Math.random() - 0.5)
+      setDisplayTestimonials(testimonials)
+      setIsLoading(false)
+    }
+
+    fetchTestimonials()
+  }, [])
+
+  const sortedTestimonials = sortByDate
+    ? [...displayTestimonials].sort((a, b) => {
+        const dateA = new Date(a.date?.split('/').reverse().join('-') || 0)
+        const dateB = new Date(b.date?.split('/').reverse().join('-') || 0)
+        return dateB - dateA
+      })
+    : displayTestimonials
 
   return (
     <>
@@ -59,19 +79,30 @@ export default async function TestimonialsPage() {
         <section className="py-24 bg-background">
           <div className="container mx-auto px-6">
             <div className="mb-16">
-              <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-3 font-bold">
-                Voices of Love & Gratitude
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-3xl">
-                Over {displayTestimonials.length} people have shared their heartfelt memories and tributes.
-                Read below to discover how Pastor Bayo's life touched the hearts of his family, friends,
-                colleagues, and the community he served.
-              </p>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div>
+                  <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-3 font-bold">
+                    Voices of Love & Gratitude
+                  </h2>
+                  <p className="text-muted-foreground text-lg max-w-3xl">
+                    Over {displayTestimonials.length} people have shared their heartfelt memories and tributes.
+                    Read below to discover how Pastor Bayo's life touched the hearts of his family, friends,
+                    colleagues, and the community he served.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSortByDate(!sortByDate)}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-secondary/30 bg-secondary/5 hover:bg-secondary/10 transition-colors text-foreground font-medium whitespace-nowrap"
+                >
+                  <CalendarIcon className="w-4 h-4" />
+                  {sortByDate ? "Random Order" : "Newest First"}
+                </button>
+              </div>
             </div>
 
             {/* Masonry Grid */}
             <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-              {displayTestimonials.map((testimonial) => (
+              {sortedTestimonials.map((testimonial) => (
                 <div
                   key={testimonial._id || testimonial.id}
                   className="break-inside-avoid bg-gradient-to-br from-card to-card/50 rounded-2xl p-7 shadow-lg border border-border/50 hover:shadow-xl hover:border-secondary transition-all backdrop-blur-sm group"
