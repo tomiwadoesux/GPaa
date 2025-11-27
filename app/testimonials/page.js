@@ -35,9 +35,14 @@ export default function TestimonialsPage() {
 
   const sortedTestimonials = sortByDate
     ? [...displayTestimonials].sort((a, b) => {
-        const dateA = new Date(a.date?.split('/').reverse().join('-') || 0)
-        const dateB = new Date(b.date?.split('/').reverse().join('-') || 0)
-        return dateB - dateA
+        const parseDate = (dateStr) => {
+          if (!dateStr) return new Date(0)
+          const [month, day, year] = dateStr.split('/')
+          // Convert YY to YYYY (24 -> 2024, 25 -> 2025, etc.)
+          const fullYear = parseInt(year) > 50 ? 1900 + parseInt(year) : 2000 + parseInt(year)
+          return new Date(fullYear, parseInt(month) - 1, parseInt(day))
+        }
+        return parseDate(b.date) - parseDate(a.date)
       })
     : displayTestimonials
 

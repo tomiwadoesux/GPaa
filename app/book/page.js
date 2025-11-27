@@ -154,7 +154,7 @@ export default function BookPage() {
                     <div>
                       <p className="text-muted-foreground">Format</p>
                       <p className="text-foreground">
-                        Hardcover, Paperback, eBook
+                        Hardcover, Paperback
                       </p>
                     </div>
                   </div>
@@ -191,7 +191,7 @@ export default function BookPage() {
                     href="/donate"
                     className="inline-flex items-center gap-2 text-secondary hover:text-secondary/80 transition-colors text-sm font-medium"
                   >
-                    About the Foundation
+                    Donate to the Foundation
                     <ExternalLinkIcon className="w-4 h-4" />
                   </Link>
                 </div>
