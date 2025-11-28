@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { ArrowRightIcon } from "./icons"
+import { useEffect, useState } from "react";
+import { YoutubeIcon } from "./icons";
 
 export function HeroSection() {
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    setIsLoaded(true)
-  }, [])
+    setIsLoaded(true);
+  }, []);
 
   return (
     <section className="relative h-screen min-h-[600px] overflow-hidden">
@@ -33,20 +33,27 @@ export function HeroSection() {
             isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <p className="text-secondary text-sm uppercase tracking-[0.3em] mb-6">In Loving Memory</p>
+          <p className="text-secondary text-sm uppercase tracking-[0.3em] mb-6">
+            In Loving Memory
+          </p>
           <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-white mb-4 text-balance">
-           Timothy Adebayo Adeku
+            Timothy Adebayo Adeku
           </h1>
-          <p className="text-white/80 text-xl md:text-2xl mb-8 font-light">1952 — 2024</p>
+          <p className="text-white/80 text-xl md:text-2xl mb-8 font-light">
+            1952 — 2024
+          </p>
           <blockquote className="text-white/90 text-lg md:text-xl italic max-w-2xl mx-auto mb-12 leading-relaxed">
-            "The greatest gift we can give to others is the gift of our authentic presence, honesty and unconditional love."
+            "The greatest gift we can give to others is the gift of our
+            authentic presence, honesty and unconditional love."
           </blockquote>
           <a
-            href="#about"
-            className="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-8 py-4 rounded-sm text-sm uppercase tracking-wider hover:bg-secondary/90 transition-colors group"
+            href="https://www.youtube.com/@victoryroyalchurch/featured"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-red-600 text-white px-8 py-4 rounded-sm text-sm uppercase tracking-wider hover:bg-red-700 transition-colors group"
           >
-            Celebrate His Life
-            <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <YoutubeIcon className="w-5 h-5" />
+            Youtube
           </a>
         </div>
       </div>
@@ -58,5 +65,5 @@ export function HeroSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
