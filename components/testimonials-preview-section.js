@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { QuoteIcon, ArrowRightIcon, HeartIcon } from "./icons"
 import { cn } from "@/lib/utils"
@@ -9,6 +9,9 @@ import { testimonials } from "@/data/testimonials"
 export function TestimonialsPreviewSection() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [randomTestimonials, setRandomTestimonials] = useState([])
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchEnd, setTouchEnd] = useState(0)
+  const carouselRef = useRef(null)
 
   useEffect(() => {
     const shuffled = [...testimonials].sort(() => 0.5 - Math.random())
@@ -22,6 +25,29 @@ export function TestimonialsPreviewSection() {
     }, 8000)
     return () => clearInterval(interval)
   }, [randomTestimonials])
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = (e) => {
+    setTouchEnd(e.changedTouches[0].clientX)
+    handleSwipe()
+  }
+
+  const handleSwipe = () => {
+    if (!touchStart || !touchEnd) return
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > 50
+    const isRightSwipe = distance < -50
+
+    if (isLeftSwipe) {
+      setActiveIndex((prev) => (prev + 1) % randomTestimonials.length)
+    }
+    if (isRightSwipe) {
+      setActiveIndex((prev) => (prev - 1 + randomTestimonials.length) % randomTestimonials.length)
+    }
+  }
 
   return (
     <section className="py-24 bg-background">
@@ -39,11 +65,16 @@ export function TestimonialsPreviewSection() {
 
         {/* Testimonials Carousel */}
         <div className="max-w-4xl mx-auto mb-12">
-          <div className="relative">
+          <div
+            ref={carouselRef}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            className="relative"
+          >
             {/* Left Arrow */}
             <button
               onClick={() => setActiveIndex((prev) => (prev - 1 + randomTestimonials.length) % randomTestimonials.length)}
-              className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 -ml-16 z-10 p-2 rounded-full hover:bg-secondary/10 transition-colors"
+              className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 -ml-16 z-10 p-2 rounded-full hover:bg-secondary/10 transition-colors"
               aria-label="Previous testimonial"
             >
               <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +111,7 @@ export function TestimonialsPreviewSection() {
             {/* Right Arrow */}
             <button
               onClick={() => setActiveIndex((prev) => (prev + 1) % randomTestimonials.length)}
-              className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 -mr-16 z-10 p-2 rounded-full hover:bg-secondary/10 transition-colors"
+              className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 -mr-16 z-10 p-2 rounded-full hover:bg-secondary/10 transition-colors"
               aria-label="Next testimonial"
             >
               <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
