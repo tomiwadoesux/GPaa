@@ -7,66 +7,72 @@ import { CalendarIcon, SpinnerIcon, CheckIcon, HeartIcon, UploadIcon } from "./i
 export function GalleryUploadForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [imagePreview, setImagePreview] = useState(null)
-  const [fileName, setFileName] = useState(null)
+  const [imagePreviews, setImagePreviews] = useState([])
   const [formData, setFormData] = useState({
-    image: null,
+    images: [],
     year: "",
     description: "",
   })
 
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
-      const file = e.target.files[0]
-      setFormData({ ...formData, image: file })
-      setFileName(file.name)
+      const files = Array.from(e.target.files)
+      setFormData({ ...formData, images: files })
 
-      // Generate image preview
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        setImagePreview(event.target.result)
-      }
-      reader.readAsDataURL(file)
+      // Generate image previews
+      const previews = []
+      files.forEach((file) => {
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          previews.push({
+            url: event.target.result,
+            name: file.name,
+          })
+          if (previews.length === files.length) {
+            setImagePreviews(previews)
+          }
+        }
+        reader.readAsDataURL(file)
+      })
     }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!formData.image) {
-      alert("Please select an image to upload.")
+    if (formData.images.length === 0) {
+      alert("Please select at least one image to upload.")
       return
     }
     setIsSubmitting(true)
 
-    const data = new FormData()
-    data.append("image", formData.image)
-    data.append("year", formData.year)
-    data.append("description", formData.description)
-
     try {
-      const response = await fetch("/api/gallery", {
-        method: "POST",
-        body: data,
-      })
+      for (const image of formData.images) {
+        const data = new FormData()
+        data.append("image", image)
+        data.append("year", formData.year)
+        data.append("description", formData.description)
 
-      if (!response.ok) {
-        throw new Error("Failed to upload image")
+        const response = await fetch("/api/gallery", {
+          method: "POST",
+          body: data,
+        })
+
+        if (!response.ok) {
+          throw new Error("Failed to upload image")
+        }
       }
 
       setIsSuccess(true)
-      setFormData({ image: null, year: "", description: "" })
-      setImagePreview(null)
-      setFileName(null)
+      setFormData({ images: [], year: "", description: "" })
+      setImagePreviews([])
       e.target.reset() // Reset file input
 
-      // Wait 2 seconds to show success message, then refresh
-      setTimeout(() => {
-        window.location.reload()
-      }, 2000)
+      // Refresh the page to show the new images
+      window.location.reload()
 
     } catch (error) {
       console.error("Upload error:", error)
-      alert("There was an error uploading your image. Please try again.")
+      alert("There was an error uploading your images. Please try again.")
     } finally {
       setIsSubmitting(false)
       // Reset success message after 5 seconds
@@ -112,7 +118,7 @@ export function GalleryUploadForm() {
             {/* Image Upload Area */}
             <div>
               <label htmlFor="image-upload" className="block text-sm font-bold text-foreground mb-3 uppercase tracking-wide">
-                Select Image <span className="text-destructive">*</span>
+                Select Images <span className="text-destructive">*</span>
               </label>
               <div className="relative">
                 <input
@@ -120,6 +126,7 @@ export function GalleryUploadForm() {
                   id="image-upload"
                   required
                   accept="image/*"
+                  multiple
                   onChange={handleFileChange}
                   className="hidden"
                 />
@@ -128,14 +135,23 @@ export function GalleryUploadForm() {
                   className="relative flex flex-col items-center justify-center w-full px-6 py-12 border-2 border-dashed border-border rounded-2xl cursor-pointer transition-all duration-300 hover:border-secondary hover:bg-secondary/5 group"
                 >
                   <div className="flex flex-col items-center gap-3">
-                    {imagePreview ? (
-                      <div className="relative w-24 h-24 rounded-xl overflow-hidden shadow-md">
-                        <Image
-                          src={imagePreview}
-                          alt="Preview"
-                          fill
-                          className="object-cover"
-                        />
+                    {imagePreviews.length > 0 ? (
+                      <div className="flex flex-wrap gap-3 justify-center">
+                        {imagePreviews.slice(0, 3).map((preview, index) => (
+                          <div key={index} className="relative w-24 h-24 rounded-xl overflow-hidden shadow-md">
+                            <Image
+                              src={preview.url}
+                              alt="Preview"
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        ))}
+                        {imagePreviews.length > 3 && (
+                          <div className="flex items-center justify-center w-24 h-24 rounded-xl bg-secondary/20 text-secondary font-bold text-lg">
+                            +{imagePreviews.length - 3}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="p-3 bg-secondary/10 rounded-xl group-hover:bg-secondary/20 transition-all">
@@ -144,14 +160,14 @@ export function GalleryUploadForm() {
                     )}
                     <div className="text-center">
                       <p className="text-lg font-bold text-foreground">
-                        {fileName ? "Change image" : "Drop your image here"}
+                        {imagePreviews.length > 0 ? "Change images" : "Drop your images here"}
                       </p>
                       <p className="text-sm text-muted-foreground mt-1">
                         or click to browse from your device
                       </p>
-                      {fileName && (
-                        <p className="text-xs text-muted-foreground mt-2 font-medium truncate max-w-xs">
-                          {fileName}
+                      {imagePreviews.length > 0 && (
+                        <p className="text-xs text-muted-foreground mt-2 font-medium">
+                          {imagePreviews.length} image{imagePreviews.length !== 1 ? "s" : ""} selected
                         </p>
                       )}
                     </div>

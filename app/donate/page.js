@@ -154,7 +154,7 @@ export default function DonatePage() {
                       Zelle Account
                     </p>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between bg-white rounded-xl p-4 border border-secondary/20 gap-4">
-                      <p className=" text-foreground/80 font-semibold text-lg">
+                      <p className="font-mono text-foreground font-semibold text-lg">
                         legacy70yr@gmail.com
                       </p>
                       <button
