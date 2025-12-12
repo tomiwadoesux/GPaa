@@ -77,15 +77,27 @@ const sermons = [
     youtubeId: "lEDlyo0HhUA",
     startTime: 2420, // 40:20
   },
+  {
+    id: 11,
+    title: "A Celebration of Life - Pastor Timothy Adebayo Adeku",
+    date: "Dec 11 2024",
+    youtubeId: "DH6aSJnSJiU",
+    description: "Join us in celebrating the remarkable life and legacy of Pastor Timothy Adebayo Adeku. This special tribute video captures the essence of his faith, wisdom, and the profound impact he had on countless lives. Through heartfelt testimonies and cherished memories, we honor a man who dedicated his life to serving God and uplifting his community.",
+    featured: true,
+  },
 ]
 
 export default function MessagesPage() {
   const [selectedSermon, setSelectedSermon] = useState(null)
   const [randomizedSermons, setRandomizedSermons] = useState([])
+  const [featuredSermon, setFeaturedSermon] = useState(null)
 
-  // Randomize sermons on component mount
+  // Separate featured sermon and randomize the rest
   useEffect(() => {
-    const shuffled = [...sermons].sort(() => Math.random() - 0.5)
+    const featured = sermons.find(s => s.featured)
+    const others = sermons.filter(s => !s.featured)
+    const shuffled = [...others].sort(() => Math.random() - 0.5)
+    setFeaturedSermon(featured)
     setRandomizedSermons(shuffled)
   }, [])
 
@@ -118,9 +130,79 @@ export default function MessagesPage() {
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl -ml-48"></div>
 
           <div className="container mx-auto px-6 relative z-10">
+            {/* Featured Video */}
+            {featuredSermon && (
+              <div className="mb-20">
+                <div
+                  onClick={() => setSelectedSermon(featuredSermon)}
+                  className="group cursor-pointer"
+                >
+                  <div className="relative overflow-hidden rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 bg-gradient-to-br from-slate-800 to-slate-900">
+                    <div className="grid md:grid-cols-2 gap-0">
+                      {/* Video Thumbnail */}
+                      <div className="relative h-80 md:h-[500px] overflow-hidden">
+                        <img
+                          src="/PBayo.webp"
+                          alt={featuredSermon.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        />
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+
+                        {/* Play Button Overlay */}
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                          <div className="w-24 h-24 rounded-full bg-secondary/90 group-hover:bg-secondary group-hover:scale-110 flex items-center justify-center transition-all duration-300 shadow-2xl">
+                            <PlayIcon className="w-12 h-12 text-secondary-foreground ml-1" />
+                          </div>
+                        </div>
+
+                        {/* Featured Badge */}
+                        <div className="absolute top-6 left-6 bg-secondary backdrop-blur-md px-5 py-2.5 rounded-full text-xs text-secondary-foreground font-bold uppercase tracking-wider shadow-lg z-20">
+                          Featured
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-8 md:p-12 flex flex-col justify-center bg-gradient-to-br from-card to-card/50">
+                        <div className="flex items-center gap-2 text-secondary mb-4">
+                          <PlayIcon className="w-4 h-4" />
+                          <span className="text-xs uppercase tracking-widest font-semibold">Special Tribute</span>
+                        </div>
+
+                        <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-6 leading-tight group-hover:text-secondary transition-colors duration-300">
+                          {featuredSermon.title}
+                        </h2>
+
+                        <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-8">
+                          {featuredSermon.description}
+                        </p>
+
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8">
+                          <div className="flex items-center gap-2">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>{featuredSermon.date}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 text-secondary group-hover:gap-4 transition-all duration-300">
+                          <span className="text-sm font-bold uppercase tracking-wider">Watch Now</span>
+                          <svg className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="mb-16">
               <h2 className="font-serif text-4xl md:text-5xl text-foreground mb-4 font-bold">
-                Video Messages
+                More Messages
               </h2>
               <p className="text-muted-foreground text-lg max-w-3xl leading-relaxed">
                 Experience the wisdom, faith, and inspiration from Pastor Bayo's powerful messages. Each sermon is a journey into deeper understanding and spiritual growth.
