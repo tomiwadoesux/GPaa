@@ -11,7 +11,7 @@ const navLinks = [
   { href: "/testimonials", label: "Memories" },
   { href: "/messages", label: "Messages" },
   { href: "/gallery", label: "Gallery" },
-  { href: "/donate", label: "Donate" },
+  { href: "/foundation", label: "Foundation" },
 ]
 
 export function Header() {

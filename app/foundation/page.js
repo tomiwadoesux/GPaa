@@ -42,7 +42,7 @@ const initiatives = [
   },
 ];
 
-export default function DonatePage() {
+export default function Foundation() {
   const [copied, setCopied] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
 
@@ -95,7 +95,7 @@ export default function DonatePage() {
                 {[
                   { label: "Initiatives", value: "4" },
                   { label: "Lives Impacted", value: "1000+" },
-                  { label: "Years of Service", value: "70+" },
+                  { label: "Years of Service", value: "2+" },
                   { label: "Communities", value: "Global" },
                 ].map((stat, index) => (
                   <div key={index} className="relative group">
